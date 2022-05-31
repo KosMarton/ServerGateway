@@ -1,10 +1,9 @@
-﻿/** Copyright Márton Kós Hungary 2021. All Rights Reserved
- * CSharp SSH and SFTP Framework for Visual Studio Integration */
+﻿/** Copyright Márton Kós Hungary 2022. All Rights Reserved
+ * CSharp SSH and SFTP Framework for Visual Studio 2022 Integration */
 
 using System;
-using System.IO;
-using Renci.SshNet;
-using System.Text;
+using System.IO; /** Necessary include for writing and reading from files. */
+using Renci.SshNet; /** The necessary namespace include for the program's backend. */
 
 namespace ServerGateway /** Include namespace if the Framework class and the implemetation definitions are not in the same namespace. */
 {
@@ -18,6 +17,7 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
          * ISSUE: if the give IP address is invalid, the program crashes. */
         public ServerGatewayService(string username, string ipAddress, string password)
         {
+            /** Assign the internal variables with the given arguements. */
             m_Username = username;
             m_IpAddress = ipAddress;
             m_Password = password;
@@ -110,12 +110,14 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
         /** Deletes files on the server with the given paths. */
         public SshCommand DeleteFiles(string[] filePaths)
         {
-            StringBuilder pathBuilder = new StringBuilder();
+            string pathBuilder = default;
             for (int i = 0; i < filePaths.Length; i++)
             {
                 if (i != 0)
-                    pathBuilder.Append(" ");
-                pathBuilder.Append(filePaths[i]);
+                {
+                    pathBuilder += " ";
+                }
+                pathBuilder += (filePaths[i]);
             }
             return SendTask($"rm {pathBuilder}");
         }
@@ -163,11 +165,9 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
          * The given path must be on your local machine (what from you running this Framework). */
         public void UploadFile(string localFilePath, string destinationPath)
         {
-            using (Stream stream = File.OpenRead(localFilePath))
-            {
-                m_SftpClient.UploadFile(stream, destinationPath + Path.GetFileName(localFilePath), x =>
-                { LogMessage($"Uploaded file name: [{Path.GetFileName(localFilePath)}] Uploaded file size (in bytes): [{x}]"); });
-            }
+            using Stream stream = File.OpenRead(localFilePath);
+            m_SftpClient.UploadFile(stream, destinationPath + Path.GetFileName(localFilePath), x =>
+            { LogMessage($"Uploaded file name: [{Path.GetFileName(localFilePath)}] Uploaded file size (in bytes): [{x}]"); });
         }
 
         /** Uploads files to the server from the given local paths.
@@ -177,11 +177,9 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
         {
             for (int i = 0; i < localFilePaths.Length; i++)
             {
-                using (Stream stream = File.OpenRead(localFilePaths[i]))
-                {
-                    m_SftpClient.UploadFile(stream, destinationPaths[i] + Path.GetFileName(localFilePaths[i]), x =>
-                    { LogMessage($"Uploaded file name: [{Path.GetFileName(localFilePaths[i])}] Uploaded file size (in bytes): [{x}]"); });
-                }
+                using Stream stream = File.OpenRead(localFilePaths[i]);
+                m_SftpClient.UploadFile(stream, destinationPaths[i] + Path.GetFileName(localFilePaths[i]), x =>
+                { LogMessage($"Uploaded file name: [{Path.GetFileName(localFilePaths[i])}] Uploaded file size (in bytes): [{x}]"); });
             }
         }
 
@@ -190,11 +188,9 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
          * The given downloadable path must be on your server. */
         public void DownloadFile(string downloadableFilePath, string destinationPath)
         {
-            using (Stream stream = File.OpenWrite(destinationPath + Path.GetFileName(downloadableFilePath)))
-            {
-                m_SftpClient.DownloadFile(downloadableFilePath, stream, x =>
-                { LogMessage($"Downloaded file name: [{Path.GetFileName(downloadableFilePath)}] Downloaded file size (in bytes): [{x}]"); });
-            }
+            using Stream stream = File.OpenWrite(destinationPath + Path.GetFileName(downloadableFilePath));
+            m_SftpClient.DownloadFile(downloadableFilePath, stream, x =>
+            { LogMessage($"Downloaded file name: [{Path.GetFileName(downloadableFilePath)}] Downloaded file size (in bytes): [{x}]"); });
         }
 
         /** Downloads files from the server to the given local paths.
@@ -204,11 +200,9 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
         {
             for (int i = 0; i < downloadableFilePaths.Length; i++)
             {
-                using (Stream stream = File.OpenWrite(destinationPaths[i] + Path.GetFileName(downloadableFilePaths[i])))
-                {
-                    m_SftpClient.DownloadFile(downloadableFilePaths[i], stream, x =>
-                    { LogMessage($"Downloaded file name: [{Path.GetFileName(downloadableFilePaths[i])}] Downloaded file size (in bytes): [{x}]"); });
-                }
+                using Stream stream = File.OpenWrite(destinationPaths[i] + Path.GetFileName(downloadableFilePaths[i]));
+                m_SftpClient.DownloadFile(downloadableFilePaths[i], stream, x =>
+                { LogMessage($"Downloaded file name: [{Path.GetFileName(downloadableFilePaths[i])}] Downloaded file size (in bytes): [{x}]"); });
             }
         }
 
@@ -219,6 +213,7 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine(message);
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
         internal void LogError(string message)
@@ -227,13 +222,30 @@ namespace ServerGateway /** Include namespace if the Framework class and the imp
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(message);
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
         /** Public variables that determines, whether the Framework can log or not.
          * They can be modified outside of the class. */
-        public bool loggingEnabled_Message = true;
-        public bool loggingEnabled_Error = true;
+        public bool loggingEnabled_Message = false;
+        public bool loggingEnabled_Error = false;
+
+        /** A function to enable or disable all logging parameters. They can also
+         * be set individually by just setting each one on the class */
+        public void SetAllLoggingEnablesToTrue(bool arg)
+        {
+            if (arg)
+            {
+                loggingEnabled_Message = true;
+                loggingEnabled_Error = true;
+            }
+            else
+            {
+                loggingEnabled_Message = false;
+                loggingEnabled_Error = false;
+            }
+        }
 
         /** Private internal variables to get hold of the reusable information */
         internal readonly string m_Username;
