@@ -14,8 +14,7 @@ Then if the repository have cloned to your directory, open the Visual Studio Sol
 Then just build and run the program. Don't forget to fill in the server parameter variables in the demonstration file (Demonstration.cs).
 
 ## If you want to use the Framework in your projects just import the `ServerGateway.cs` file into your project and include the `ServerGateway` namespace.
-## Don't forget to download the Renci.Sshnet NuGet package to your project solution, otherwise it's not going to work. Thats becase the backend of the code
-## needs this additional library to function. The repository's solution already contains this additional library!
+## Don't forget to download the Renci.Sshnet NuGet package to your project solution, otherwise it's not going to work. Thats becase the backend of the code needs this additional library to function. The repository's solution already contains this additional library!
 
 ## License
 The code is open source and free to copy but don't forget to mention my Github if you using this in your project.
