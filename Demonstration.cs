@@ -12,9 +12,10 @@ class Program
         Console.WriteLine("Starting operation...");
 
         /** Server informations what the Framework will use to connect the SSH and SFTP clients. */
-        string username = "root";
-        string ipAddress = "51.77.74.141";
-        string password = "L2Yw6hGbbmtafvawNZ6oE0o0Y1nBFXJ5iPDuycHMCcPW4DjKzvOpa";
+        // Fill in with your datas, must be valid to work properly
+        string username = "username";
+        string ipAddress = "ipaddress";
+        string password = "password";
 
         /** A simple Linux bash command for just showcase. */
         string command = "echo 'Welcome to Linux (:'";
